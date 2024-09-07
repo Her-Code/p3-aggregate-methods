@@ -14,6 +14,23 @@ class Student:
 
     def get_enrollments(self):
         return self._enrollments.copy()
+    
+    def add_grade(self, enrollment, grade):
+        """Add or update the grade for a specific enrollment."""
+        if not isinstance(enrollment, str) or not isinstance(grade, (int, float)):
+            raise ValueError("Enrollment must be a string and grade must be an integer or float")
+        self._grades[enrollment] = grade
+
+    def aggregate_average_grade(self):
+        """Calculate the average grade across all enrollments."""
+        if not self._grades:
+            return 0  # Avoid division by zero if no grades are present
+
+        total_grades = sum(self._grades.values())
+        num_courses = len(self._grades)
+        average_grade = total_grades / num_courses
+
+        return average_grade
 
 class Course:
     def __init__(self, title):
@@ -45,3 +62,11 @@ class Enrollment:
 
     def get_enrollment_date(self):
         return self._enrollment_date
+    
+    @classmethod
+    def aggregate_enrollments_per_day(cls):
+       enrollment_count = {}
+       for enrollment in cls.all:
+          date = enrollment.get_enrollment_date().date()
+          enrollment_count[date] = enrollment_count.get(date, 0) + 1
+          return enrollment_count
